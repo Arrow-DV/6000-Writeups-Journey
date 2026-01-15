@@ -1,0 +1,36 @@
+Write Up | Day 1
+Vulnerabilities in Open Source C2 Frameworks
+https://blog.includesecurity.com/2024/09/vulnerabilities-in-open-source-c2-frameworks/
+===========================================================
+What is C2 Frameworks? 
+Open Source C2 Frameworks have been getting a lot of attention in the past few years.
+The closed source Cobalt Strike has been the undisputed ( بلا منازع - مسلم به)
+king of C2 , but opensource alternatives are seeing more usage among red teamers
+threat actors , and hobbyists. Open source alternatives don't have sky-high ( very high )
+licensing costs , and have the potential ( الجهد - القدره - القوه)
+to fly under the radar in a world where Cobalt Strike's default behaviors are heavily
+profiled and fingerprinted
+
+a quick recap: a C2 framework is infrastructure used for controlling and maintaining
+access to hacked computers. C2 frameworks simplify the process for their operators " hacker's operator's"
+who are attacking a targeted network or organization. A term that is often associated
+with C2 frameworks is 'post-exploitation': C2  frameworks are designed to assist attackers who have already gained
+a access or some level of control over a target's computer whether (سواء) through 
+phishing process , web vulnerabilities or supply chain attacks. The post-exploitation phase ( مرحله) quickly 
+becomes messy without a central management platform , especially for teams
+of operators collaborating together , C2 frameworks aim
+to solve that problem by packaging together three components : agent , teamserver and client
+examples of C2 frameworks  -> Njrat , Metasploit , Sliver, etc
+Agent (also known as Implant/Demon/Beacon) – malware run on targeted systems that connects back to the teamserver, maintains access, and executes commands on the compromised system.
+Teamserver – central backend service that receives call-backs from agents launched on hacked systems, and communicates with the agents. Has an API or some other interface to enable operators to interact with the teamserver and issue instructions to the agents.
+Client – web interface or program run locally by the operator to connect to the teamserver, providing a UI to manage operations. In less mature C2 frameworks, the client may just be a command line interface (CLI) presented by the teamserver after it has started, rather than a separate component running on the operator’s own computer.
+
+Additional terminology that is shared among C2 frameworks:
+    Loot – files, credentials, and screenshots downloaded/exfiltrated from compromised systems and stored on the teamserver
+    Listener – a port opened on the teamserver to listen for agent callbacks
+    Handler – backend code that executes on the teamserver in response to an agent callback, e.g. a handler could receive and download loot from the agent to the teamserver
+    Task – a queued operation that the operator wants an agent to perform
+    Beacon interval – a regular time period (e.g. every 30 seconds) that the agent waits in between checking into the teamserver listener to see if it has any tasks to perform. Done because it is stealthier than a persistent connection
+    Stager – a minimal piece of code executed on a compromised host that is designed to fetch and run a full C2 agent. It is stealthier and easier to deploy than a multi-megabyte agent
+    Stager listener – service running on the teamserver that delivers the full agent in response to a stager callback
+    Redirector – server that receives agent callbacks and forwards them to the teamserver. Aims to hide the teamserver’s IP address and make the agent-teamserver communications look like regular traffic
